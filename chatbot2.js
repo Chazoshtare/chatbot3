@@ -12,7 +12,6 @@ const chatbotLogic = require("./features/chatbotLogic.js");
 
 const client = new tmi.client(chatbotLogic.chatbotOptions);
 // update module reference
-
 const chatbot = (function() {
   let $botStatus = $("#bot-status");
   let $statusON = $("#status-on");
