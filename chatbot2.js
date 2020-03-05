@@ -32,8 +32,12 @@ const chatbot = (function() {
     $statusON.removeClass("disabled");
   }
 })();
+
 chatbotLogic.inputLoad();
+chatbotLogic.displayIgnored();
+chatbotLogic.displayPhrases();
 sfx._loadSounds();
+
 client.on("connected", function(address, port) {
   if (chatbotLogic.credentials.newMsg == "") {
     return;
@@ -158,7 +162,7 @@ client.on("chat", (channel, userstate, message, self) => {
         userstate["mod"] ||
         userstate["username"] == chatbotLogic.credentials.channelName
       ) {
-        if (settings.ignoredtts.includes(args[0])) {
+        if (chatbotLogic.settings.ignoredtts.includes(args[0])) {
           let index = chatbotLogic.settings.ignoredtts.indexOf(args[0]);
           chatbotLogic.settings.ignoredtts.splice(index, 1);
           functions.unignore(args[0]);
