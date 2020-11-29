@@ -20,7 +20,7 @@ module.exports = {
         let soundArray = [];
         for (var i = 0; i < items.length; i++) {
           let z = items[i].slice(0, -4);
-          soundArray.push("!" + z.toLowerCase());
+          soundArray.push(z.toLowerCase());
         }
         chatbotLogic.settings.sounds = soundArray;
         $soundTable.html(" ");

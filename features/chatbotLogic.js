@@ -29,10 +29,10 @@ let credentials = {
 let settings = {
   audioVolume: config.volumes.audioVolume,
   ttsVolume: config.volumes.ttsVolume,
-  ignoredtts: commandsFile.ignoredPpl,
+  ignoredPpl: commandsFile.ignoredPpl,
   commands: commandsFile.botCommands,
   bannedPhrases: commandsFile.bannedPhrases,
-  bots: ["qdth", "moobot", "nightbot", "eddwardg"],
+  bots: ["moobot", "nightbot"],
   sounds: [],
   ttsLangs: commandsFile.ttsLangs,
 };
@@ -143,15 +143,15 @@ module.exports = {
         let $remove = $(e.target).closest("li");
         let guyToRemove = $("#ignoredList").find("li").index($remove);
         $remove.remove();
-        settings.ignoredtts.splice(guyToRemove, 1);
+        settings.ignoredPpl.splice(guyToRemove, 1);
         module.exports.remFromFile("ignoredPpl", guyToRemove);
       });
     });
   },
   displayIgnored() {
     let ignoredData = "";
-    for (let key in settings.ignoredtts) {
-      ignoredData += `<li> - ${settings.ignoredtts[key]} <i class="del">X</i> </li>`;
+    for (let key in settings.ignoredPpl) {
+      ignoredData += `<li> - ${settings.ignoredPpl[key]} <i class="del">X</i> </li>`;
     }
     $ignoredList.html(ignoredData);
     module.exports.bindDeleteGuy();
@@ -160,14 +160,15 @@ module.exports = {
     let guy = $(e.target).prev("input").val();
     guy = guy.toLowerCase();
     $(e.target).prev("input").val("");
-    if (!settings.ignoredtts.includes(guy)) {
-      settings.ignoredtts.push(guy);
+    if (!settings.ignoredPpl.includes(guy)) {
+      settings.ignoredPpl.push(guy);
       fs.readFile(folderPath + "./data/commands.json", (err, data) => {
         if (err) chatbotModules.logToConsole("error", err);
         let obj = JSON.parse(data);
         obj["ignoredPpl"].push(guy);
         let json = JSON.stringify(obj, null, 2);
         fs.writeFile(folderPath + "./data/commands.json", json, added);
+
         function added(err) {
           if (err) chatbotModules.logToConsole("error", err);
           chatbotModules.logToConsole("info", "Guy added: " + guy);
