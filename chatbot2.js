@@ -82,7 +82,7 @@ client.on("chat", (channel, userstate, message, self) => {
   const messageArray = message.split(/ (.+)/)
 
   const command = messageArray[0].substr(1)
-  const content = messageArray[1] && messageArray[1].substr(1) || ""
+  const content = messageArray[1] && messageArray[1].substr(0) || ""
 
   // if(userstate)
   // console.log(userstate.badges.hasOwnProperty("vip"));
@@ -97,21 +97,16 @@ client.on("chat", (channel, userstate, message, self) => {
   //msg-id: "highlighted-message"
   //msg-id: "skip-subs-mode-message"
 
-  if (chatbotLogic.settings.ttsLangs.hasOwnProperty(command)) {
-    if (tts.canFireTTS(userstate)) {
-      const lang = chatbotLogic.settings.ttsLangs[command]
+  const lang = chatbotLogic.settings.ttsLangs[command.split("2")[0]]
 
+  if (lang) {
+    const speed = command.includes("2") ? 0.1 : 1;
+    if (tts.canFireTTS(userstate)) {
       if (tts.filterTTS(content)) {
-        if (tts.ttsQueue.length < 1) {
-          console.log(tts.ttsQueue.length);
-          if (tts.ttsPlaying == false) {
-            tts.sayTTS(lang, content);
-            tts.ttsPlaying == true;
-          } else {
-            tts.addToQueue(lang, content);
-          }
+        if (tts.ttsQueue.length < 1 && tts.ttsPlaying === false) {
+          tts.sayTTS(lang, content, speed);
         } else {
-          tts.addToQueue(lang, content);
+          tts.addToQueue(lang, content, speed);
         }
       } else return;
     }

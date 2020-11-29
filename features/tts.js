@@ -18,7 +18,7 @@ let ttsSettings = {
 };
 
 let ttsQueue = [];
-$("#ttsSubOnly").on("change", function() {
+$("#ttsSubOnly").on("change", function () {
   if (this.checked) {
     $("#ttsIncludeVips").prop("disabled", false);
     $("#ttsIncludeMods").prop("disabled", false);
@@ -35,14 +35,14 @@ $("#ttsSubOnly").on("change", function() {
     ttsSettings.ttsIncludeVips = false;
   }
 });
-$("#ttsIncludeVips").on("change", function() {
+$("#ttsIncludeVips").on("change", function () {
   if (this.checked) {
     ttsSettings.ttsIncludeVips = true;
   } else {
     ttsSettings.ttsIncludeVips = false;
   }
 });
-$("#ttsIncludeMods").on("change", function() {
+$("#ttsIncludeMods").on("change", function () {
   if (this.checked) {
     ttsSettings.ttsIncludeMods = true;
   } else {
@@ -69,20 +69,22 @@ module.exports = {
       return false;
     }
   },
-  addToQueue(lang, msg) {
-    ttsQueue.push([lang, msg]);
+
+  addToQueue(lang, msg, speed = 1) {
+    ttsQueue.push({lang, msg, speed});
   },
-  sayTTS(lang, msg) {
+
+  sayTTS(lang, msg, speed = 1) {
     module.exports.ttsPlaying = true;
-    googleTTS(msg, lang, 1)
-      .then(function(url) {
+    googleTTS(msg, lang, speed)
+      .then(url => {
         $("#audio1")
           .prop("volume", chatbotLogic.settings.ttsVolume)
           .attr("src", url)
           .get(0)
           .play();
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err);
       });
   },
@@ -95,10 +97,8 @@ module.exports = {
       return;
     } else {
       module.exports.ttsPlaying = true;
-      let elTTS = ttsQueue.shift();
-      let lang = elTTS[0];
-      let msg = elTTS[1];
-      module.exports.sayTTS(lang, msg);
+      const elTTS = ttsQueue.shift();
+      module.exports.sayTTS(elTTS.lang, elTTS.msg, elTTS.speed);
     }
   },
 
@@ -114,6 +114,7 @@ module.exports = {
         userBadge.sub = true;
       }
     }
+
     if (ttsSettings.ttsSubOnly) {
       if (ttsSettings.ttsIncludeVips) {
         if (userBadge.vip || userBadge.sub) {
@@ -124,9 +125,7 @@ module.exports = {
           return true;
         }
       } else {
-        if (userBadge.sub) {
-          return true;
-        } else return false;
+        return userBadge.sub;
       }
     } else {
       return true;
@@ -141,6 +140,7 @@ module.exports = {
       obj["volumes"]["ttsVolume"] = $ttsVolume.val();
       let json = JSON.stringify(obj, null, 2);
       fs.writeFile(folderPath + "./data/config.json", json, added);
+
       function added(err) {
         if (err)
           //logToConsole("error", err);
