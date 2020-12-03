@@ -76,17 +76,12 @@ module.exports = {
 
   sayTTS(lang, msg, speed = 1) {
     module.exports.ttsPlaying = true;
-    googleTTS(msg, lang, speed)
-      .then(url => {
-        $("#audio1")
-          .prop("volume", chatbotLogic.settings.ttsVolume)
-          .attr("src", url)
-          .get(0)
-          .play();
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    const url = googleTTS(msg, lang, speed)
+    $("#audio1")
+      .prop("volume", chatbotLogic.settings.ttsVolume)
+      .attr("src", url)
+      .get(0)
+      .play();
   },
 
   movettsQueue() {
