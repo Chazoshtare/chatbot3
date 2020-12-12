@@ -100,13 +100,13 @@ client.on("chat", (channel, userstate, message, self) => {
   const lang = chatbotLogic.settings.ttsLangs[command.split("2")[0]]
 
   if (lang) {
-    const speed = command.includes("2") ? 0.1 : 1;
+    const slow = command.includes("2");
     if (tts.canFireTTS(userstate)) {
       if (tts.filterTTS(content)) {
         if (tts.ttsQueue.length < 1 && tts.ttsPlaying === false) {
-          tts.sayTTS(lang, content, speed);
+          tts.sayTTS(lang, content, slow);
         } else {
-          tts.addToQueue(lang, content, speed);
+          tts.addToQueue(lang, content, slow);
         }
       } else return;
     }

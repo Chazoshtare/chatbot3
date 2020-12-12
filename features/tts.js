@@ -70,13 +70,17 @@ module.exports = {
     }
   },
 
-  addToQueue(lang, msg, speed = 1) {
-    ttsQueue.push({lang, msg, speed});
+  addToQueue(lang, msg, slow = false) {
+    ttsQueue.push({lang, msg, slow});
   },
 
-  sayTTS(lang, msg, speed = 1) {
+  sayTTS(lang, msg, slow = false) {
     module.exports.ttsPlaying = true;
-    const url = googleTTS(msg, lang, speed)
+    const url = googleTTS.getAudioUrl(msg, {
+      lang: lang,
+      slow: slow,
+      host: "https://translate.google.com"
+    })
     $("#audio1")
       .prop("volume", chatbotLogic.settings.ttsVolume)
       .attr("src", url)
@@ -93,7 +97,7 @@ module.exports = {
     } else {
       module.exports.ttsPlaying = true;
       const elTTS = ttsQueue.shift();
-      module.exports.sayTTS(elTTS.lang, elTTS.msg, elTTS.speed);
+      module.exports.sayTTS(elTTS.lang, elTTS.msg, elTTS.slow);
     }
   },
 
