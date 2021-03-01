@@ -60,7 +60,7 @@ client.on("chat", (channel, userstate, message, self) => {
   const username = userstate["username"]
   const messageId = userstate["msg-id"]
   const isMod = userstate["mod"]
-  const isBroadcaster = userstate.badges["broadcaster"] === "1"
+  const isBroadcaster = userstate.badges && userstate.badges["broadcaster"] === "1"
 
   if (self
     || chatbotLogic.settings.bots.includes(username)
@@ -123,13 +123,13 @@ client.on("chat", (channel, userstate, message, self) => {
       break;
 
     case "open":
-      if (isMod || username === chatbotLogic.credentials.channelName) {
+      if (isMod || isBroadcaster) {
         wheel.openEvent();
       }
       break;
 
     case "close":
-      if (isMod || username === chatbotLogic.credentials.channelName) {
+      if (isMod || isBroadcaster) {
         wheel.closeEvent();
       }
       break;
@@ -144,7 +144,7 @@ client.on("chat", (channel, userstate, message, self) => {
       const ignoreGuy = content.toLowerCase();
       console.log(ignoreGuy);
 
-      if (isMod || username === chatbotLogic.credentials.channelName) {
+      if (isMod || isBroadcaster) {
         if (chatbotLogic.settings.ignoredPpl.includes(ignoreGuy)) {
           functions.logToConsole("error", "already in array / its stremer");
         } else {
@@ -157,7 +157,7 @@ client.on("chat", (channel, userstate, message, self) => {
 
     case "unignore":
       const unignoreGuy = content.toLowerCase();
-      if (isMod || username === chatbotLogic.credentials.channelName) {
+      if (isMod || isBroadcaster) {
         if (chatbotLogic.settings.ignoredPpl.includes(unignoreGuy)) {
           let index = chatbotLogic.settings.ignoredPpl.indexOf(unignoreGuy);
           chatbotLogic.settings.ignoredPpl.splice(index, 1);
