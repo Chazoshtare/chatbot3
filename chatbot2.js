@@ -60,6 +60,7 @@ client.on("chat", (channel, userstate, message, self) => {
   const username = userstate["username"]
   const messageId = userstate["msg-id"]
   const isMod = userstate["mod"]
+  const isBroadcaster = userstate.badges["broadcaster"] === "1"
 
   if (self
     || chatbotLogic.settings.bots.includes(username)
@@ -194,7 +195,7 @@ client.on("chat", (channel, userstate, message, self) => {
     //   break;
 
     case "skiptts":
-      if (isMod || username === chatbotLogic.credentials.channelName) {
+      if (isMod || isBroadcaster) {
         tts.movettsQueue();
       }
       break;
